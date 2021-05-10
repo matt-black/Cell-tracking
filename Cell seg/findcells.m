@@ -1,12 +1,12 @@
 function cells = findcells(l, maskout, sm, maxl, minl, th)
 %% Find the cells in a certain image. 
-    % Inputs:   l - Brightness image, 
+    % Inputs:   l - Brightness image (Normalize to be between 0 and 1).
     %           maskout - Mask of regions to check for cells. (Checks
     %           regions with 0s excludes regions with 1s).
     %           sm - Smoothness for calculating director field. (I use 2).
     %           maxl - Maximum cell length in pixels (ish). (I use 80).
     %           minl - Minimum cell length (hard cutoff). (I use 10).
-    %           th - Brightness threshold for cell ends.
+    %           th - Brightthness threshold for cell ends (I use 0.3).
     
     tstrt = tic;
 
