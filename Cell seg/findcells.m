@@ -1,15 +1,18 @@
-function cells = findcells(l,maskout)
+function cells = findcells(l, maskout, sm, maxl, minl, th)
 %% Find the cells in a certain image. 
     % Inputs:   l - Brightness image, 
     %           maskout - Mask of regions to check for cells. (Checks
     %           regions with 0s excludes regions with 1s).
+    %           sm - Smoothness for calculating director field. (I use 2).
+    %           maxl - Maximum cell length in pixels (ish). (I use 80).
+    %           minl - Minimum cell length (hard cutoff). (I use 10).
+    %           th - Brightness threshold for cell ends.
     
     tstrt = tic;
-    % Load in image data.
-%     l = laserprep(fpath,t);
-%     l = normalise(l);
+
     % Find the director field and image gradients for making strealines
-    df = dfield(l,2);  % Director field function.
+
+    df = dfield(l,sm);  % Director field function.
     dfx = cos(df);
     dfy = sin(df);
     [grx,gry] = gradient(l);
@@ -31,6 +34,7 @@ function cells = findcells(l,maskout)
 %     edges(imdilate(holes,strel('disk',1)))=1;
 %     lay2s = lays==2;
 %     edges(imdilate(lay2s,strel('disk',11)))=1;
+
     edges(maskout==1)=1;
     testpts(edges==1)=0;
 
@@ -39,7 +43,6 @@ function cells = findcells(l,maskout)
 
     [I, J] = ind2sub(size(l),uinds);
     u = [J I];
-    
     
     is = 1:numel(u(:,1)); % List of points still needed to be tested.
     cells = {}; 
@@ -58,7 +61,8 @@ function cells = findcells(l,maskout)
         
         % Calculate a potential cell center line through point i.
         % Streamline function.
-        sline = sllame(dfx,dfy,u(is(i),:),150,grx,gry,donezo,l, 0.3);
+        
+        sline = sllame(dfx,dfy,u(is(i),:),2*maxl,grx,gry,donezo,l,th);
         
         sline = sline(2:end-1,:);
         
@@ -67,7 +71,7 @@ function cells = findcells(l,maskout)
         
         del = zeros(size(is));
 
-        if numel(sline(:,1))>10 % Use cells which are more than 10 pixels long.
+        if numel(sline(:,1))>minl % Use cells which are more minl long.
             cell = sline;
 
             % Create a list of indices for a mask of the cell.
