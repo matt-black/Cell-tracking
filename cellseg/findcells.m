@@ -99,6 +99,8 @@ function cells = findcells(l, maskout, sm, maxl, minl, th)
 
     end
 
+    cells = cell2mat (cells);           % convert to struct array
+
     toc(tstrt)
     
 %     for i = 1:numel(cells)
