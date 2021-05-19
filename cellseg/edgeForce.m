@@ -9,8 +9,7 @@ function [ Fx, Fy ] = edgeForce ( img, sigma )
     end
 
     % sobel filters for x/y derivatives
-    fdx = fliplr (fspecial ('sobel')');
-    fdy = fspecial ('sobel');
+    [fdx, fdy] = xyDerivFilters ();
     % make sure image is double
     if not (isa (img, 'double'))
         img = im2double (img);

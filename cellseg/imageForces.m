@@ -5,8 +5,7 @@ function [E_dx, E_dy, Fe_x, Fe_y] = imageForces ( im, im16, sigma_edge, ...
 %IMAGEFORCES 
 
     % sobel filters for x/y derivatives
-    fdx = fliplr (fspecial('sobel')'); % masks for computing x & y derivatives
-    fdy = fspecial ('sobel');
+    [fdx, fdy] = xyDerivFilters ();
 
     % Edge forces
     [Fe_x, Fe_y] = edgeForce (im16, sigma_edge);
